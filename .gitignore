@@ -1,0 +1,23 @@
+# Large dataset files
+all_urls_dataset.csv
+phishtank.csv
+openphish.txt
+top-1m.csv
+top-1m.csv.zip
+
+# Model files (large)
+model1_url.h5
+model2_bilstm.h5
+test_data.pkl
+tokenizer.pkl
+
+# Temporary files
+temp/
+__pycache__/
+*.pyc
+
+# Evaluation reports
+evaluation_report.json
+
+# Installer
+git-installer.exe

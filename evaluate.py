@@ -73,7 +73,7 @@ def evaluate(dataset=None, samples=20000, label_col="label", url_col="url"):
 
     # Load test data from pickle
     try:
-        test_data = pickle.load(open("test_data.pkl", "rb"))
+        test_data = pickle.load(open("temp/test_data.pkl", "rb"))
         X_test = test_data["X_test"]
         y_true = test_data["y_test"].tolist()
         urls_test = test_data["urls"]

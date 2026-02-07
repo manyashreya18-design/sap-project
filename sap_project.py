@@ -17,9 +17,18 @@ p1["label"] = 1
 p2 = pd.read_csv("openphish.txt", names=["url"])
 p2["label"] = 1
 
-# ⚠ Legit dataset must be downloaded manually
-print("Now download legit dataset manually (Tranco Top 1M)")
-print("https://tranco-list.eu/top-1m.csv.zip")
+# Load legit dataset
+leg = pd.read_csv("top-1m.csv", names=["rank","domain"])
+leg["url"] = "http://" + leg["domain"]
+leg["label"] = 0
 
-print("After downloading and unzipping, put top-1m.csv in this folder.")
+# Combine all
+all_data = pd.concat([p1, p2, leg[["url","label"]]])
+all_data = all_data.drop_duplicates("url")
+all_data = all_data.sample(frac=1)
+
+# Save final dataset
+all_data.to_csv("all_urls_dataset.csv", index=False)
+
+print("DONE! all_urls_dataset.csv is created")
 

@@ -1,0 +1,2 @@
+- [x] Update api_server.py to load the trained models and tokenizer at startup
+- [x] Modify the predict function to use the models for actual prediction, combining both models' outputs with heuristics

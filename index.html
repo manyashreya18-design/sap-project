@@ -187,16 +187,16 @@ button:hover{opacity:0.9;}
 
         <input list="savedUrls" id="url" placeholder="Paste or select website URL">
         <datalist id="savedUrls">
-            <option value="https://google.com">
-            <option value="https://github.com">
-            <option value="https://microsoft.com">
-            <option value="https://openai.com">
-            <option value="https://edunetfoundation.com">
-            <option value="https://paypal.com">
-            <option value="https://amazon.com">
-            <option value="https://facebook.com">
-            <option value="https://twitter.com">
-            <option value="https://linkedin.com">
+            <option value="https://www.google.com">
+            <option value="https://www.github.com">
+            <option value="https://www.microsoft.com">
+            <option value="https://google-login-secure.verify-user.com">
+            <option value="https://amazon-account-update-alert.net/login">
+            <option value="https://secure-paypal.verify-now.info">
+            <option value="https://www.amazon.com">
+            <option value="https://codeunnati.edunetfoundation.com">
+            <option value="https://www.twitter.com">
+            <option value="https://192.168.0.1/login/verify">
         </datalist>
 
         <button onclick="checkURL()">Analyze Website</button>
@@ -243,7 +243,7 @@ button:hover{opacity:0.9;}
         <h3 id="popupTitle"></h3>
         <p id="popupMsg"></p>
         <p><strong id="popupConf"></strong></p>
-        <button onclick="closePopup()">OK</button>
+        <button id="popupButton" onclick="closePopup()">OK</button>
     </div>
 </div>
 
@@ -299,24 +299,31 @@ function checkURL(){
     msg.innerText="Analyzing website...";
     fill.style.width="0%";
 
-    // Simulate analysis delay
-    setTimeout(() => {
-        // Generate a random confidence score for demo purposes
-        let c = Math.floor(Math.random() * 101);
+    // Call the API for prediction
+    fetch('http://localhost:5000/predict', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({url: url})
+    })
+    .then(response => response.json())
+    .then(data => {
+        let c = data.confidence;
+        let status = data.status;
         fill.style.width=c+"%";
         confText.innerText="Confidence Score: "+c+"%";
         updateSaved(url);
-
-        let status = c >= 50 ? "Phishing" : "Safe";
         addToHistory(url, status, c);
 
-        if(c>=50){
+        if(status === 'Phishing'){
             res.className="result phish";
             msg.innerText="🚨 Phishing Website Detected";
             showPopup(
-              "🚫 ACCESS BLOCKED",
-              "This website is detected as phishing and has been blocked.",
-              c
+              "🚫 PHISHING DETECTED",
+              "This website is detected as phishing. Please do not proceed.",
+              c,
+              true
             );
         }else{
             res.className="result safe";
@@ -324,10 +331,16 @@ function checkURL(){
             showPopup(
               "⚠️ LOW RISK WARNING",
               "Website appears safe, but proceed carefully.",
-              c
+              c,
+              false
             );
         }
-    }, 1000); // 1 second delay to simulate analysis
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Error analyzing the URL. Please try again.");
+        res.style.display="none";
+    });
 }
 </script>
 
